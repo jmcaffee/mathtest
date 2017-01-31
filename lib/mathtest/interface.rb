@@ -41,6 +41,60 @@ module Mathtest
       ans
     end
 
+    def get_test_configuration
+      test = Hash.new
+
+      print("======  MATHTEST v#{Mathtest::VERSION}  ======\n\n")
+
+      test[:count] = ask("How many problems? ", "10").to_i
+      test[:type] = :standard
+      if ask("Test doubles (y/n) ", "n") == "y"
+        test[:type] = :doubles
+        test[:operation] = :times
+      else
+        op = get_operation
+        while ! [:addition, :subtraction, :times, :division].include? op
+          op = get_operation
+        end
+        test[:operation] = op
+      end
+
+      print("\n")
+      test[:lower_limit] = ask("What is the lowest operand possible? ", "1").to_i
+      test[:upper_limit] = ask("What is the highest operand possible? ", "10").to_i
+
+      test[:success_percent] = ask("What score percentage ends the test (1-100)? ", "90").to_i
+
+      test
+    end
+
+    def get_operation
+      print("\n")
+      print("--- Operations ---\n\n")
+
+      print("    addition:       a\n")
+      print("    subtraction:    s\n")
+      print("    multiplication: m\n")
+      print("    division:       d\n")
+      print("\n")
+      op = ask(" Problem operations (a/s/m/d)? ", "m")
+
+      op = case op
+      when 'a'
+        :addition
+      when 's'
+        :subtraction
+      when 'm'
+        :times
+      when 'd'
+        :division
+      else
+        op
+      end
+
+      op
+    end
+
     def op_to_string(op)
       str = case op
       when :times

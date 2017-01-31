@@ -50,29 +50,8 @@ module Mathtest
 
       count.times do |i|
         num = generate_number lower_limit, upper_limit
-        while !valid_nums(lefts[i], num, op)
-          num = generate_number lower_limit, upper_limit
-        end
         @problems << to_problem_hash(lefts[i], num, op)
       end
-    end
-
-    def valid_nums left, right, op
-      if (op == :division or op == :subtraction)
-        if right_le_left(left, right)
-          if op == :division
-            ( left % right ) == 0
-          else
-            true
-          end
-        end
-      else
-        true
-      end
-    end
-
-    def right_le_left left, right
-      right <= left
     end
 
     def generate_doubles
@@ -105,11 +84,26 @@ module Mathtest
       answer = case op
       when :times
         left * right
-      when :division
-        left / right
       when :addition
         left + right
+      when :division
+        # Make sure LHS is greater
+        #
+        # Convert a multiplication problem using valid operands into
+        # a division problem:
+        # 56 = 7 * 8
+        # 56 / 8 = 7
+        # answer = 7
+        ans = left
+        # left = 56 = 7 * 8
+        left = ans * right
+        ans
       when :subtraction
+        # Make sure LHS is greater
+        max_left = [left, right].max
+        min_right = [left, right].min
+        left = max_left
+        right = min_right
         left - right
       else
         "NaN"
