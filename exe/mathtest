@@ -1,0 +1,117 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+# vim: set ft=ruby
+##############################################################################
+# File::    mathtest
+# Purpose:: MathTest Application
+# 
+# Author::    Jeff McAffee 01/30/2017
+# Copyright:: Copyright (c) 2017, kTech Systems LLC. All rights reserved.
+# Website::   http://ktechsystems.com
+##############################################################################
+
+require 'bundler/setup'
+
+$LOAD_PATH.unshift(File.expand_path("../../lib", __FILE__))
+require 'mathtest'
+
+# Exit cleanly from early interrupt
+Signal.trap("INT") { puts ""; exit 1 }
+
+class MathTestApp
+
+  attr_accessor :test
+
+  def initialize
+    @test = Mathtest::Test.new
+  end
+
+  def interface
+    test.interface
+  end
+
+  def execute
+    configure_test
+    interface.ask("\n\nPress [ENTER] to begin")
+    interface.print("\n\n")
+
+    execute_test
+  end
+
+  def configure_test
+    interface.print("======  MATHTEST v#{Mathtest::VERSION}  ======\n\n")
+
+    test.count = interface.ask("How many problems? ", "10").to_i
+    test_type = :standard
+    if interface.ask("Test doubles (y/n) ", "n") == "y"
+      test.type = :doubles
+      test.operation = :times
+    else
+      op = get_operation
+      while ! [:addition, :subtraction, :times, :division].include? op
+        get_operation
+      end
+      test.operation = op
+    end
+
+    interface.print("\n")
+    test.lower_limit = interface.ask("What is the lowest operand possible? ", "1").to_i
+    test.upper_limit = interface.ask("What is the highest operand possible? ", "10").to_i
+
+    test.success_percent = interface.ask("What score percentage ends the test (1-100)? ", "90").to_i
+  end
+
+  def get_operation
+    interface.print("\n")
+    interface.print("--- Operations ---\n\n")
+
+    interface.print("    addition:       a\n")
+    interface.print("    subtraction:    s\n")
+    interface.print("    multiplication: m\n")
+    interface.print("    division:       d\n")
+    interface.print("\n")
+    op = interface.ask(" Problem operations (a/s/m/d)? ", "m")
+
+    op = case op
+    when 'a'
+      :addition
+    when 's'
+      :subtraction
+    when 'm'
+      :times
+    when 'd'
+      :division
+    else
+      op
+    end
+
+    op
+  end
+
+  def execute_test
+    test.execute
+  end
+end
+
+begin
+  MathTestApp.new.execute
+
+rescue SystemExit
+
+rescue Exception => e
+  puts "An error occurred."
+  puts "Please send the following information to support@ktechsystems.com:"
+  puts
+  puts Mathtest::APPNAME + " " + Mathtest::VERSION
+  puts
+  puts "I've fallen and I can't get up..."
+  puts
+  puts "\t" + e.message
+  puts
+  if Mathtest::VERSION.include?('alpha') ||
+     Mathtest::VERSION.include?('beta') ||
+     Mathtest::VERSION.include?('pre')
+    puts "Exception type: #{e.class.to_s}"
+    puts e.backtrace
+  end
+end
