@@ -47,55 +47,7 @@ class MathTestApp
     test.lower_limit = test_config.fetch(:lower_limit)
     test.upper_limit = test_config.fetch(:upper_limit)
     test.success_percent = test_config.fetch(:success_percent)
-
-    #interface.print("======  MATHTEST v#{Mathtest::VERSION}  ======\n\n")
-
-    #test.count = interface.ask("How many problems? ", "10").to_i
-    #test_type = :standard
-    #if interface.ask("Test doubles (y/n) ", "n") == "y"
-    #  test.type = :doubles
-    #  test.operation = :times
-    #else
-    #  op = get_operation
-    #  while ! [:addition, :subtraction, :times, :division].include? op
-    #    get_operation
-    #  end
-    #  test.operation = op
-    #end
-
-    #interface.print("\n")
-    #test.lower_limit = interface.ask("What is the lowest operand possible? ", "1").to_i
-    #test.upper_limit = interface.ask("What is the highest operand possible? ", "10").to_i
-
-    #test.success_percent = interface.ask("What score percentage ends the test (1-100)? ", "90").to_i
   end
-
-  #def get_operation
-  #  interface.print("\n")
-  #  interface.print("--- Operations ---\n\n")
-
-  #  interface.print("    addition:       a\n")
-  #  interface.print("    subtraction:    s\n")
-  #  interface.print("    multiplication: m\n")
-  #  interface.print("    division:       d\n")
-  #  interface.print("\n")
-  #  op = interface.ask(" Problem operations (a/s/m/d)? ", "m")
-
-  #  op = case op
-  #  when 'a'
-  #    :addition
-  #  when 's'
-  #    :subtraction
-  #  when 'm'
-  #    :times
-  #  when 'd'
-  #    :division
-  #  else
-  #    op
-  #  end
-
-  #  op
-  #end
 
   def execute_test
     test.execute
