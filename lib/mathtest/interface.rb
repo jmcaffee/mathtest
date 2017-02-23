@@ -41,6 +41,10 @@ module Mathtest
       ans
     end
 
+    def clear_screen
+      Gem.win_platform? ? (system "cls") : print("\ec")
+    end
+
     def get_test_configuration
       test = Hash.new
 

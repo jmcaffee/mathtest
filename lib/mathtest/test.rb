@@ -37,6 +37,8 @@ module Mathtest
     def execute
       executing = true
       while executing
+        interface.clear_screen
+
         configure_generator
         generator.generate
 
